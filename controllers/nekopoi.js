@@ -35,7 +35,7 @@ async function nekoLatest(req, res) {
         status: 403,
         message: `apikey ${apikey} not found, please register first!`
     });
-    getLatest(url).then(result => {
+    getLatest().then(result => {
         res.status(200).send({status: 200, result: result});
     }).catch(error => {
         console.log(error);
