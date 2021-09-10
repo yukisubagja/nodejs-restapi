@@ -25,11 +25,10 @@ async function nekoInfo(req, res) {
 }
 
 async function nekoLatest(req, res) {
-    const url = req.query.url;
     const apikey = req.query.apikey;
-    if (url === undefined || apikey === undefined) return res.status(404).send({
+    if (apikey === undefined) return res.status(404).send({
         status: 404,
-        message: `Input Parameter url & apikey`
+        message: `Input Parameter apikey`
     });
     const check = await cekKey(apikey);
     if (!check) return res.status(403).send({
