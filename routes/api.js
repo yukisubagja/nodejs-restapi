@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { cekKey } = require('../database/db'); 
 const { youtubePlay, youtubeMp4, youtubeMp3 } = require('../controllers/yt');
+const { getInfo, getLatest } = require('../controllers/nekopoi');
 const { cakLontong, bijak, quotes, fakta, ptl, motivasi } = require('../controllers/randomtext');
 
 router.get('/checkkey', async (req, res) => {
@@ -35,5 +36,9 @@ router.get('/bijak', bijak);
 router.get('/ptl', ptl);
 
 router.get('/motivasi', motivasi);
+
+router.get('/nekoinfo', getInfo);
+
+router.get('/nekolatest', getLatest);
 
 module.exports = router;
