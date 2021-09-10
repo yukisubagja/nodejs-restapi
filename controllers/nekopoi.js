@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const getLatest = () => {
+function getLatest() => {
   return new Promise((resolve, reject) => {
     const url = 'http://nekopoi.care';
     axios.get(url)
@@ -36,7 +36,7 @@ const getLatest = () => {
       });
   });
 };
-const getInfo = url => {
+function getInfo(url) => {
   return new Promise((resolve, reject) => {
     axios.get(url)
       .then(req => {
