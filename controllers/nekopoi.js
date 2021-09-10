@@ -1,7 +1,7 @@
 const { getInfo, getLatest } = require("../lib/poi");
 const { cekKey } = require('../database/db');
 
-async function getInfo(req, res) {
+async function nekoInfo(req, res) {
     const query = req.query.query;
     const apikey = req.query.apikey;
     if (query === undefined || apikey === undefined) return res.status(404).send({
@@ -24,7 +24,7 @@ async function getInfo(req, res) {
     });
 }
 
-async function getLatest(req, res) {
+async function nekoLatest(req, res) {
     const url = req.query.url;
     const apikey = req.query.apikey;
     if (url === undefined || apikey === undefined) return res.status(404).send({
@@ -49,4 +49,4 @@ async function getLatest(req, res) {
 
 
 
-module.exports = { getInfo, getLatest };
+module.exports = { nekoInfo, nekoLatest };
