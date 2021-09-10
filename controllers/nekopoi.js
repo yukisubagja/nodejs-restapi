@@ -1,65 +1,52 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+const { getInfo, getLatest } = require("../lib/poi");
+const { cekKey } = require('../database/db');
 
-function getLatest() => {
-  return new Promise((resolve, reject) => {
-    const url = 'http://nekopoi.care';
-    axios.get(url)
-      .then(req => {
-        const title = [];
-        const link = [];
-        const image = [];
-        const data = [];
-        const soup = cheerio.load(req.data);
-        soup('div.eropost').each(function(i, e) {
-          soup(e).find('h2').each(function(j, s) {
-            title.push(soup(s).find('a').text().trim());
-            link.push(url + soup(s).find('a').attr('href'));
-          });
-          image.push(url + soup(e).find('img').attr('src'));
-        });
-        var i;
-        for (i = 0; i < title.length; i++) {
-          let isi = {
-            "title": title[i],
-            "image": image[i],
-            "link": link[i]
-          };
-          data.push(isi);
-        }
-        if (data == undefined) {
-          reject("No result :(");
-        } else {
-          var result = JSON.stringify(data, null, 2);
-          resolve(result);
-        }
-      });
-  });
-};
-function getInfo(url) => {
-  return new Promise((resolve, reject) => {
-    axios.get(url)
-      .then(req => {
-        try {
-          const links = [];
-          let soup = cheerio.load(req.data);
-          let title = soup("title").text();
-          soup('div.liner').each(function(i, e) {
-            soup(e).find('div.listlink').each(function(j, s) {
-              links.push(soup(s).find('a').attr('href'))
-            });
-          });
-          const data = {
-            "title": title,
-            "links": links
-          };
-          resolve(data)
-        } catch (err) {
-          reject('Error : ' + err)
-        }
-      })
-  });
-};
+async function getInfo(req, res) {
+    const query = req.query.query;
+    const apikey = req.query.apikey;
+    if (query === undefined || apikey === undefined) return res.status(404).send({
+        status: 404,
+        message: `Input Parameter query & apikey`
+    });
+    const check = await cekKey(apikey);
+    if (!check) return res.status(403).send({
+        status: 403,
+        message: `apikey ${apikey} not found, please register first!`
+    });
+    getInfo(query).then(result => {
+        res.status(200).send({status: 200, result: result});
+    }).catch(error => {
+        console.log(error);
+        res.status(500).send({
+            status: 500,
+            message: 'Internal Server Error'
+        })
+    });
+}
 
-module.exports = getInfo;
-module.exports = getLatest;
+async function getLatest(req, res) {
+    const url = req.query.url;
+    const apikey = req.query.apikey;
+    if (url === undefined || apikey === undefined) return res.status(404).send({
+        status: 404,
+        message: `Input Parameter url & apikey`
+    });
+    const check = await cekKey(apikey);
+    if (!check) return res.status(403).send({
+        status: 403,
+        message: `apikey ${apikey} not found, please register first!`
+    });
+    getLatest(url).then(result => {
+        res.status(200).send({status: 200, result: result});
+    }).catch(error => {
+        console.log(error);
+        res.status(500).send({
+            status: 500,
+            message: 'Internal Server Error'
+        })
+    });
+}
+
+
+
+module.exports = { getInfo, getLatest };
